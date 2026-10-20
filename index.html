@@ -27,11 +27,15 @@ window.ZEDA_CONFIG = {
   leadEndpoint: "",
 
   // Popup de saída (desktop): abre uma vez por sessão quando o mouse sai da página
-  exitIntent: true
+  exitIntent: true,
+
+  // Google Tag Manager do site. Se o site já carrega este contêiner, a página não carrega de novo.
+  // Deixe "" para não carregar.
+  gtmId: "GTM-N2VGW857"
 };
 </script>
 
-<!-- Cole aqui o Google Tag Manager / Meta Pixel. A página já envia os eventos
+<!-- O GTM é carregado pela própria página (gtmId acima). Cole aqui só o Meta Pixel, se usar. A página envia os eventos
      "lead_form_open", "lead_step" e "generate_lead" para o dataLayer e fbq. -->
 
 <script type="application/ld+json">
@@ -674,10 +678,32 @@ div#zeda-lp-overlay{background:none;width:0;height:0}
   setSb(); window.addEventListener("resize", setSb);
 
   /* ---------- Rastreamento (GTM / Meta, se instalados) ---------- */
-  function track(event, data) {
+  window.dataLayer = window.dataLayer || [];
+  function loadGTM() {
+    var id = CFG.gtmId;
+    if (!id || (window.google_tag_manager && window.google_tag_manager[id]) ||
+        document.querySelector('script[src*="googletagmanager.com/gtm.js?id=' + id + '"]')) return;
+    window.dataLayer.push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+    var s = document.createElement("script");
+    s.async = true;
+    s.src = "https://www.googletagmanager.com/gtm.js?id=" + id;
+    document.head.appendChild(s);
+  }
+  /* Espera o resto da página: se o tema/plugin já instala o GTM mais abaixo, não duplica */
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", loadGTM);
+  else loadGTM();
+
+  function track(event, data, done) {
     data = data || {};
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push(Object.assign({ event: event }, data));
+    var push = Object.assign({ event: event }, data);
+    if (done) {
+      /* Chama done quando as tags do GTM terminarem, ou após 1,5 s se o GTM não responder */
+      var called = false, finish = function () { if (!called) { called = true; done(); } };
+      push.eventCallback = finish;
+      push.eventTimeout = 1500;
+      setTimeout(finish, 1800);
+    }
+    window.dataLayer.push(push);
     try {
       if (typeof window.fbq === "function") {
         if (event === "generate_lead") window.fbq("track", "Lead", { content_category: data.perfil || "" });
@@ -722,7 +748,6 @@ div#zeda-lp-overlay{background:none;width:0;height:0}
     lead.pagina = location.href.split("#")[0];
     lead.data = new Date().toISOString();
     Object.assign(lead, UTMS);
-    track("generate_lead", { origem: lead.origem, perfil: lead.perfil, faixa: lead.faixa });
 
     if (CFG.leadEndpoint) {
       var body = JSON.stringify(lead);
@@ -743,7 +768,10 @@ div#zeda-lp-overlay{background:none;width:0;height:0}
     if (lead.mensagem) lines.push("*Detalhes:* " + lead.mensagem);
     lines.push("", "Posso enviar fotos dos itens se precisar.");
     var url = "https://wa.me/" + CFG.whatsapp + "?text=" + encodeURIComponent(lines.join("\n"));
-    setTimeout(function () { window.location.href = url; }, 250);
+    /* Abre o WhatsApp só depois de a conversão ser registrada (GTM / Google Ads) */
+    track("generate_lead", { origem: lead.origem, perfil: lead.perfil, faixa: lead.faixa }, function () {
+      window.location.href = url;
+    });
   }
 
   /* ---------- Popup de qualificação ---------- */
