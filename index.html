@@ -235,20 +235,16 @@ div#zeda-lp-overlay{background:none;width:0;height:0}
 :is(#zeda-lp,#zeda-lp-overlay) .contact svg{width:20px;height:20px;color:var(--lime)}
 :is(#zeda-lp,#zeda-lp-overlay) .contact a{text-decoration:none}
 @media(max-width:900px){:is(#zeda-lp,#zeda-lp-overlay) .foot-form .wrap{grid-template-columns:1fr}}
-:is(#zeda-lp,#zeda-lp-overlay) footer{background:#0b140f;color:#8fa298;font-size:.85rem;padding:22px 0 90px}
+:is(#zeda-lp,#zeda-lp-overlay) footer{background:#0b140f;color:#8fa298;font-size:.85rem;padding:22px 0}
 :is(#zeda-lp,#zeda-lp-overlay) footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px}
-@media(min-width:768px){:is(#zeda-lp,#zeda-lp-overlay) footer{padding-bottom:22px}}
 
 :is(#zeda-lp,#zeda-lp-overlay) /* Flutuantes */
 .wa-float{position:fixed;right:20px;bottom:20px;z-index:2147482000;width:62px;height:62px;border-radius:50%;background:var(--wa);color:#fff;border:0;cursor:pointer;display:grid;place-items:center;box-shadow:0 10px 25px rgba(37,211,102,.45);animation:pulse 2.4s infinite}
 :is(#zeda-lp,#zeda-lp-overlay) .wa-float svg{width:32px;height:32px}
 :is(#zeda-lp,#zeda-lp-overlay) .wa-float .bubble{position:absolute;right:74px;white-space:nowrap;background:#fff;color:var(--ink);font-weight:600;font-size:.88rem;padding:8px 12px;border-radius:10px;box-shadow:var(--shadow)}
 @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(37,211,102,.5)}70%{box-shadow:0 0 0 16px rgba(37,211,102,0)}100%{box-shadow:0 0 0 0 rgba(37,211,102,0)}}
-:is(#zeda-lp,#zeda-lp-overlay) .mbar{display:none}
 @media(max-width:767px){
   :is(#zeda-lp,#zeda-lp-overlay) .wa-float{display:none}
-  :is(#zeda-lp,#zeda-lp-overlay) .mbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:2147482000;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:#fff;border-top:1px solid var(--line);box-shadow:0 -6px 20px rgba(0,0,0,.08)}
-  :is(#zeda-lp,#zeda-lp-overlay) .mbar .btn{width:100%;padding:15px}
 }
 @media(prefers-reduced-motion:reduce){:is(#zeda-lp,#zeda-lp-overlay),:is(#zeda-lp,#zeda-lp-overlay) *{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 :is(#zeda-lp,#zeda-lp-overlay) /* Fotos (com fundo de reserva caso a imagem não carregue) */
@@ -588,7 +584,6 @@ div#zeda-lp-overlay{background:none;width:0;height:0}
 <div id="zeda-lp-overlay">
 <!-- Flutuantes -->
 <button class="wa-float" data-lead="flutuante" aria-label="Agendar coleta pelo WhatsApp"><span class="bubble">Agende sua coleta</span><svg><use href="#i-wa"/></svg></button>
-<div class="mbar"><button class="btn btn-wa" data-lead="barra-mobile"><svg><use href="#i-wa"/></svg>Agendar coleta pelo WhatsApp</button></div>
 
 <!-- POPUP DE QUALIFICAÇÃO -->
 <div class="modal" id="leadModal" role="dialog" aria-modal="true" aria-labelledby="mTitle">
